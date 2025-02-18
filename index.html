@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بازی ایردراپ</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        button { font-size: 18px; padding: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>بازی ایردراپ</h1>
+    <p>با کلیک روی دکمه هر ۸ ساعت امتیاز بگیر!</p>
+    <button id="claimBtn">دریافت توکن</button>
+    <p id="status"></p>
+
+    <script>
+        const claimBtn = document.getElementById('claimBtn');
+        const statusText = document.getElementById('status');
+
+        function getLastClaimTime() {
+            return localStorage.getItem('lastClaimTime') || 0;
+        }
+
+        function setLastClaimTime(time) {
+            localStorage.setItem('lastClaimTime', time);
+        }
+
+        function canClaim() {
+            const lastClaimTime = parseInt(getLastClaimTime());
+            const currentTime = Date.now();
+            return currentTime - lastClaimTime >= 8 * 60 * 60 * 1000; // 8 ساعت
+        }
+
+        claimBtn.addEventListener('click', () => {
+            if (canClaim()) {
+                setLastClaimTime(Date.now());
+                statusText.innerText = "✅ توکن اضافه شد!";
+            } else {
+                statusText.innerText = "⏳ لطفاً بعداً دوباره امتحان کنید.";
+            }
+        });
+
+        // بررسی وضعیت دکمه هنگام لود صفحه
+        if (!canClaim()) {
+            claimBtn.disabled = true;
+            statusText.innerText = "⏳ لطفاً بعداً دوباره امتحان کنید.";
+        }
+    </script>
+</body>
+</html>
