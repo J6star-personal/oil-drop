@@ -1,23 +1,79 @@
 <!DOCTYPE html>
-<html lang="fa">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بازی ایردراپ</title>
+    <title>Airdrop Game</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; }
-        button { font-size: 18px; padding: 10px; cursor: pointer; }
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: linear-gradient(45deg, #08092a, #030512);
+            color: white;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            margin-top: 20px;
+        }
+        button {
+            font-size: 18px;
+            padding: 12px 20px;
+            cursor: pointer;
+            background: #222;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+        button:disabled {
+            background: #444;
+            cursor: not-allowed;
+        }
+        #countdown {
+            font-size: 18px;
+            margin-top: 10px;
+            color: #ffcc00;
+        }
+        .bottom-nav {
+            display: flex;
+            width: 100%;
+            justify-content: space-around;
+            position: fixed;
+            bottom: 20px;
+        }
+        .nav-button {
+            padding: 10px 15px;
+            background: #222;
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
-    <h1>بازی ایردراپ</h1>
-    <p>با کلیک روی دکمه هر ۸ ساعت امتیاز بگیر!</p>
-    <button id="claimBtn">دریافت توکن</button>
-    <p id="status"></p>
+    <h1>Airdrop Game</h1>
+    <p>Click the button below to claim tokens every 8 hours!</p>
+    
+    <div id="countdown"></div>
+    <button id="claimBtn">Claim Tokens</button>
+
+    <div class="bottom-nav">
+        <a href="#" class="nav-button">🏆 Task</a>
+        <a href="#" class="nav-button">💰 Earn</a>
+        <a href="#" class="nav-button">📨 Invites</a>
+        <a href="#" class="nav-button">🏠 Home</a>
+    </div>
 
     <script>
         const claimBtn = document.getElementById('claimBtn');
-        const statusText = document.getElementById('status');
+        const countdownDiv = document.getElementById('countdown');
 
         function getLastClaimTime() {
             return localStorage.getItem('lastClaimTime') || 0;
@@ -30,22 +86,42 @@
         function canClaim() {
             const lastClaimTime = parseInt(getLastClaimTime());
             const currentTime = Date.now();
-            return currentTime - lastClaimTime >= 8 * 60 * 60 * 1000; // 8 ساعت
+            return currentTime - lastClaimTime >= 8 * 60 * 60 * 1000;
+        }
+
+        function startCountdown() {
+            const lastClaimTime = parseInt(getLastClaimTime());
+            const targetTime = lastClaimTime + 8 * 60 * 60 * 1000;
+
+            function updateCountdown() {
+                const currentTime = Date.now();
+                const timeLeft = targetTime - currentTime;
+
+                if (timeLeft <= 0) {
+                    countdownDiv.innerText = "";
+                    claimBtn.disabled = false;
+                } else {
+                    const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+                    const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+                    countdownDiv.innerText = `⏳ ${hours}h ${minutes}m ${seconds}s remaining`;
+                    setTimeout(updateCountdown, 1000);
+                }
+            }
+            updateCountdown();
         }
 
         claimBtn.addEventListener('click', () => {
             if (canClaim()) {
                 setLastClaimTime(Date.now());
-                statusText.innerText = "✅ توکن اضافه شد!";
-            } else {
-                statusText.innerText = "⏳ لطفاً بعداً دوباره امتحان کنید.";
+                claimBtn.disabled = true;
+                startCountdown();
             }
         });
 
-        // بررسی وضعیت دکمه هنگام لود صفحه
         if (!canClaim()) {
             claimBtn.disabled = true;
-            statusText.innerText = "⏳ لطفاً بعداً دوباره امتحان کنید.";
+            startCountdown();
         }
     </script>
 </body>
