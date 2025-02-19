@@ -2,26 +2,31 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Airdrop Game</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>OilDrop Company Game</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background: linear-gradient(45deg, #08092a, #030512);
-            color: white;
+        /* تنظیمات کلی برای حفظ نسبت 19:6 در تمام دستگاه‌ها */
+        html, body {
             height: 100vh;
+            width: 100vw;
+            max-width: 450px; /* حداکثر عرض، شبیه گوشی */
+            margin: auto;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             align-items: center;
-            margin: 0;
-            padding: 20px;
+            background: linear-gradient(45deg, #08092a, #030512);
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
         }
+        
         h1 {
             margin-top: 20px;
         }
-        button {
+
+        #claimBtn {
             font-size: 18px;
             padding: 12px 20px;
             cursor: pointer;
@@ -30,23 +35,35 @@
             border: none;
             border-radius: 8px;
             transition: 0.3s;
+            margin-top: 10px;
         }
-        button:disabled {
+
+        #claimBtn:disabled {
             background: #444;
             cursor: not-allowed;
         }
+
         #countdown {
             font-size: 18px;
             margin-top: 10px;
             color: #ffcc00;
         }
+
+        p {
+            margin: 15px 0;
+        }
+
         .bottom-nav {
             display: flex;
             width: 100%;
             justify-content: space-around;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.2);
             position: fixed;
-            bottom: 20px;
+            bottom: 0;
+            left: 0;
         }
+
         .nav-button {
             padding: 10px 15px;
             background: #222;
@@ -59,10 +76,12 @@
 </head>
 <body>
     <h1>Airdrop Game</h1>
-    <p>Click the button below to claim tokens every 8 hours!</p>
-    
-    <div id="countdown"></div>
+
+    <!-- دکمه Claim Tokens بالای متن توضیحات -->
     <button id="claimBtn">Claim Tokens</button>
+    <div id="countdown"></div>
+
+    <p>Click the button below to claim tokens every 8 hours!</p>
 
     <div class="bottom-nav">
         <a href="#" class="nav-button">🏆 Task</a>
