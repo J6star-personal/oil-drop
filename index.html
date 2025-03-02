@@ -12,7 +12,6 @@
             text-align: center;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
             height: 100vh;
             overflow: hidden;
@@ -22,17 +21,36 @@
         h1 {
             font-size: 32px;
             font-weight: bold;
-            margin-bottom: 20px;
+            margin-top: 70px; /* فاصله از بالای صفحه */
+            margin-bottom: 0;
         }
 
         .timer-box {
             background: rgba(255, 255, 255, 0.2);
             padding: 10px 20px;
             border-radius: 10px;
-            margin-bottom: 10px;
             font-size: 20px;
             font-weight: bold;
             color: red;
+            margin-top: 100px; /* فاصله ۱۰۰ پیکسل از عنوان */
+            margin-bottom: 10px;
+        }
+
+        .claim-btn {
+            background: yellow;
+            color: black;
+            font-weight: bold;
+            font-size: 18px;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px; /* فاصله ۱۰ پیکسل از باکس متن */
+        }
+
+        .claim-btn:disabled {
+            background: gray;
+            cursor: not-allowed;
         }
 
         .oil-drop {
@@ -47,7 +65,7 @@
             animation: drop 3s infinite ease-in-out;
         }
 
-        .oil-drop.hidden { display: none; }
+        .oil-drop.hidden { display: none; } /* مخفی کردن قطره در ابتدا */
 
         @keyframes drop {
             0% { top: 0; opacity: 1; }
@@ -55,29 +73,12 @@
             100% { top: 100%; opacity: 0; }
         }
 
-        .claim-btn {
-            background: yellow;
-            color: black;
-            font-weight: bold;
-            font-size: 18px;
-            padding: 10px 20px;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-            margin-top: 10px;
-        }
-
-        .claim-btn:disabled {
-            background: gray;
-            cursor: not-allowed;
-        }
-
         .barrel-image {
             position: absolute;
-            bottom: -120px;
+            bottom: -180px;
             left: 50%;
             transform: translateX(-50%);
-            width: 200px;
+            width: 280px;
             height: auto;
         }
     </style>
@@ -88,7 +89,7 @@
     <div class="timer-box" id="timerBox">00:00:00</div>
     <button class="claim-btn" id="claimBtn">Start Mining</button>
 
-    <div class="oil-drop" id="oilDrop"></div>
+    <div class="oil-drop hidden" id="oilDrop"></div> <!-- قطره را در ابتدا مخفی کردم -->
     <img src="https://bayanbox.ir/view/907275674889280792/oildrop-barrel.png" alt="Oil Barrel" class="barrel-image" id="barrelImage">
 
     <script>
@@ -117,7 +118,7 @@
                     clearInterval(countdown);
                     claimBtn.innerText = "Claim Drops";
                     claimBtn.disabled = false;
-                    oilDrop.classList.add("hidden");
+                    oilDrop.classList.add("hidden"); // پنهان کردن قطره پس از اتمام زمان
                     miningActive = false;
                 }
                 timeRemaining--;
@@ -130,16 +131,16 @@
                 claimBtn.innerText = "Claim Drops";
                 claimBtn.disabled = true;
                 timerBox.style.color = "white";
+                oilDrop.classList.remove("hidden"); // نمایش قطره هنگام شروع
                 startTimer(8 * 3600);
             } else {
                 alert("You have claimed 8 points!");
                 claimBtn.innerText = "Start Mining";
                 timerBox.innerText = "00:00:00";
                 timerBox.style.color = "red";
-                oilDrop.classList.remove("hidden");
+                oilDrop.classList.add("hidden"); // پنهان کردن قطره پس از کلیک روی Claim
             }
         });
     </script>
 </body>
 </html>
-
