@@ -1,147 +1,198 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>OilDrop Company Game</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OilDROP WebApp</title>
     <style>
-        /* تنظیمات کلی برای حفظ نسبت 19:6 در تمام دستگاه‌ها */
-        html, body {
-            height: 100vh;
-            width: 100vw;
-            max-width: 450px; /* حداکثر عرض، شبیه گوشی */
-            margin: auto;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
-            background: linear-gradient(45deg, #08092a, #030512);
+        body {
+            background-color: #0a1a1a;
             color: white;
             font-family: Arial, sans-serif;
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
         }
-        
+
         h1 {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        /* بشکه */
+        .barrel {
+            width: 100px;
+            height: 160px;
+            background: linear-gradient(to bottom, #222, #333);
+            border-radius: 10px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            overflow: hidden;
+            border: 5px solid #111;
+            transition: background 0.5s ease-in-out;
+        }
+
+        .barrel.red {
+            background: red !important;
+        }
+
+        .barrel::before, .barrel::after {
+            content: "";
+            width: 130px;
+            height: 15px;
+            background: #444;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 50%;
+        }
+
+        .barrel::before { top: -10px; }
+        .barrel::after { bottom: 10px; }
+
+        /* قطره نفت */
+        .oil-drop {
+            width: 25px;
+            height: 35px;
+            background: black;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            border-radius: 50%;
+            transform: translateX(-50%);
+            animation: drop 3s infinite ease-in-out;
+        }
+
+        .oil-drop.hidden { display: none; }
+
+        @keyframes drop {
+            0% { top: 0; opacity: 1; }
+            80% { top: 70%; }
+            100% { top: 100%; opacity: 0; }
+        }
+
+        /* دکمه */
+        .claim-btn, .timer {
+            background: yellow;
+            color: black;
+            font-weight: bold;
+            font-size: 18px;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
             margin-top: 20px;
         }
 
-        #claimBtn {
-            font-size: 18px;
-            padding: 12px 20px;
-            cursor: pointer;
-            background: #222;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            transition: 0.3s;
-            margin-top: 10px;
-        }
+        .claim-btn.hidden { display: none; }
+        .timer.hidden { display: none; }
 
-        #claimBtn:disabled {
-            background: #444;
-            cursor: not-allowed;
-        }
-
-        #countdown {
-            font-size: 18px;
-            margin-top: 10px;
-            color: #ffcc00;
-        }
-
-        p {
-            margin: 15px 0;
-        }
-
+        /* نوار پایین */
         .bottom-nav {
+            position: absolute;
+            bottom: 20px;
             display: flex;
-            width: 100%;
             justify-content: space-around;
-            padding: 10px;
-            background: rgba(0, 0, 0, 0.2);
-            position: fixed;
-            bottom: 0;
-            left: 0;
+            width: 90%;
         }
 
-        .nav-button {
-            padding: 10px 15px;
-            background: #222;
+        .nav-item {
+            width: 50px;
+            height: 50px;
+            background: red;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             color: white;
-            border-radius: 8px;
-            text-decoration: none;
-            font-size: 16px;
+            font-size: 12px;
+        }
+
+        .nav-item img {
+            width: 20px;
+            height: 20px;
+            margin-bottom: 5px;
         }
     </style>
 </head>
 <body>
-    <h1>Airdrop Game</h1>
+    <h1>OilDROP</h1>
 
-    <!-- دکمه Claim Tokens بالای متن توضیحات -->
-    <button id="claimBtn">Claim Tokens</button>
-    <div id="countdown"></div>
+    <!-- بشکه و قطره نفت -->
+    <div class="barrel" id="barrel"></div>
+    <div class="oil-drop" id="oilDrop"></div>
 
-    <p>Click the button below to claim tokens every 8 hours!</p>
+    <!-- دکمه Claim -->
+    <button class="claim-btn" id="claimBtn">claim drops</button>
 
+    <!-- تایمر -->
+    <div class="timer hidden" id="timer">8:00:00</div>
+
+    <!-- نوار پایین -->
     <div class="bottom-nav">
-        <a href="#" class="nav-button">🏆 Task</a>
-        <a href="#" class="nav-button">💰 Earn</a>
-        <a href="#" class="nav-button">📨 Invites</a>
-        <a href="#" class="nav-button">🏠 Home</a>
+        <div class="nav-item">
+            <img src="https://bayanbox.ir/view/8901046673497582065/home.png" alt="Home">
+            <span>Home</span>
+        </div>
+        <div class="nav-item">
+            <img src="https://bayanbox.ir/view/5863404965420795441/calendar.png" alt="Tasks">
+            <span>Tasks</span>
+        </div>
+        <div class="nav-item">
+            <img src="https://bayanbox.ir/view/764738163252598909/user.png" alt="Invite">
+            <span>Invite</span>
+        </div>
+        <div class="nav-item">
+            <img src="https://bayanbox.ir/view/6759157954249634464/wallet-income.png" alt="Wallet">
+            <span>Wallet</span>
+        </div>
     </div>
+	<script>
+        const claimBtn = document.getElementById("claimBtn");
+        const timer = document.getElementById("timer");
+        const barrel = document.getElementById("barrel");
+        const oilDrop = document.getElementById("oilDrop");
 
-    <script>
-        const claimBtn = document.getElementById('claimBtn');
-        const countdownDiv = document.getElementById('countdown');
+        let countdown;
 
-        function getLastClaimTime() {
-            return localStorage.getItem('lastClaimTime') || 0;
-        }
+        function startTimer(duration) {
+            let timeRemaining = duration;
 
-        function setLastClaimTime(time) {
-            localStorage.setItem('lastClaimTime', time);
-        }
+            countdown = setInterval(() => {
+                const hours = Math.floor(timeRemaining / 3600);
+                const minutes = Math.floor((timeRemaining % 3600) / 60);
+                const seconds = timeRemaining % 60;
 
-        function canClaim() {
-            const lastClaimTime = parseInt(getLastClaimTime());
-            const currentTime = Date.now();
-            return currentTime - lastClaimTime >= 8 * 60 * 60 * 1000;
-        }
-
-        function startCountdown() {
-            const lastClaimTime = parseInt(getLastClaimTime());
-            const targetTime = lastClaimTime + 8 * 60 * 60 * 1000;
-
-            function updateCountdown() {
-                const currentTime = Date.now();
-                const timeLeft = targetTime - currentTime;
-
-                if (timeLeft <= 0) {
-                    countdownDiv.innerText = "";
-                    claimBtn.disabled = false;
-                } else {
-                    const hours = Math.floor(timeLeft / (1000 * 60 * 60));
-                    const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-                    const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-                    countdownDiv.innerText = `⏳ ${hours}h ${minutes}m ${seconds}s remaining`;
-                    setTimeout(updateCountdown, 1000);
+                timer.innerText = ${hours}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")};
+                
+                if (timeRemaining <= 0) {
+                    clearInterval(countdown);
+                    barrel.classList.add("red");  // بشکه قرمز می‌شود
+                    oilDrop.classList.add("hidden");  // قطره محو می‌شود
+                    timer.classList.add("hidden");  // تایمر مخفی می‌شود
+                    claimBtn.classList.remove("hidden");  // دکمه مجدداً نمایش داده می‌شود
                 }
-            }
-            updateCountdown();
+
+                timeRemaining--;
+            }, 1000);
         }
 
-        claimBtn.addEventListener('click', () => {
-            if (canClaim()) {
-                setLastClaimTime(Date.now());
-                claimBtn.disabled = true;
-                startCountdown();
-            }
+        claimBtn.addEventListener("click", () => {
+            claimBtn.classList.add("hidden");  // دکمه مخفی شود
+            timer.classList.remove("hidden");  // تایمر نمایش داده شود
+            barrel.classList.remove("red");  // بشکه به حالت عادی بازگردد
+            oilDrop.classList.remove("hidden");  // قطره دوباره نمایش داده شود
+
+            startTimer(8 * 3600);  // شروع تایمر ۸ ساعته
         });
-
-        if (!canClaim()) {
-            claimBtn.disabled = true;
-            startCountdown();
-        }
     </script>
 </body>
 </html>
